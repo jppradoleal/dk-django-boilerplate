@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+    entrypoint:
+      - ./docker/docker-entrypoint.sh
+    env_file:
+      - ./.env.dev
+    volumes:
+      - .:/django
+    ports:
+      - 8000:8000
+      - 5678:5678
+    depends_on:
+      - db
+  db:
+    image: postgres:14.2-alpine
+    restart: unless-stopped
+    volumes:
+      - ./data/postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=django
+      - POSTGRES_DB=django
+      - POSTGRES_PASSWORD=django
